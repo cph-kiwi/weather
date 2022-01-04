@@ -4,34 +4,41 @@ import styled, { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
 html {
+  min-height: 100%;
+        }
+body {
           box-sizing: border-box;
           background: #ffd1dc;
-          font-family: "helvetica neue";
+          font-family: Arial, Helvetica, sans-serif;
           font-size: 20px;
           font-weight: 200;
-          min-height: 100vh;
         }
 `;
 
 const Home: NextPage = () => {
   return (
-    <div>
+    <Container>
       <GlobalStyles />
       <Head>
         <title>Weather App</title>
       </Head>
-      <Title>
-        <h1>Weather</h1>
-      </Title>
-    </div>
+      <Title>Weather</Title>
+    </Container>
   );
 };
 
 export default Home;
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const Title = styled.h1`
   color: #614e55;
-  margin: auto;
-  width: 50%;
-  padding: 10px;
+  font-size: 80px;
+  font-weight: 800;
+  margin: 100px 0px 0px 0px;
+  padding: 0px;
 `;
