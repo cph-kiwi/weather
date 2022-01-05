@@ -1,6 +1,8 @@
 import Head from "next/head";
 import type { NextPage } from "next";
 import styled, { createGlobalStyle } from "styled-components";
+import React, { useState, useCallback } from "react";
+import { type } from "os";
 
 const GlobalStyles = createGlobalStyle`
 html {
@@ -16,6 +18,30 @@ body {
 `;
 
 const Home: NextPage = () => {
+  const apiKey = "088fa901df58c5e65281cdffd7c8d1a9";
+  const toCelsius = "&units=metric";
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [cityInput, setCityInput] = useState("");
+  const [cityData, setCityData] = useState(undefined);
+
+  // const [latitude, setLatitude] = useState(0);
+  // const [longitude, setLongitude] = useState(0);
+  // const [url, setUrl] = useState("");
+
+  const API_URL = `api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${apiKey}${toCelsius}`;
+
+  const getCityData = useCallback(() => {
+    setIsLoading(true);
+    fetch(API_URL)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        setCityData(result);
+        setIsLoading(false);
+      });
+  }, [API_URL]);
+
   return (
     <Container>
       <GlobalStyles />
@@ -23,6 +49,22 @@ const Home: NextPage = () => {
         <title>Weather App</title>
       </Head>
       <Title>Weather</Title>
+      <Input
+        id="city-input"
+        placeholder="City name"
+        type="text"
+        value={cityInput}
+        onChange={(event) => {
+          setCityInput(event.target.value);
+        }}
+      ></Input>
+      <Button id="button" type="button" onClick={getCityData}>
+        Submit
+      </Button>
+      {isLoading && <p>Loading...</p>}
+      {!isLoading && <p>Type in a city to get the weather.</p>}
+      {cityData === undefined && <CityName>City: ???</CityName>}
+      {cityData !== undefined && <CityName>City: {cityData.name}</CityName>}
     </Container>
   );
 };
@@ -41,4 +83,29 @@ const Title = styled.h1`
   font-weight: 800;
   margin: 100px 0px 0px 0px;
   padding: 0px;
+`;
+
+const Input = styled.input`
+  width: 300px;
+  margin: 30px 0px 0px 0px;
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid #614e55;
+  color: black;
+`;
+
+const Button = styled.button`
+  border-radius: 8px;
+  background: #f7cac9;
+  box-shadow: 8px 8px 8px #cfaaa9, -8px -8px 8px #ffeae9;
+  border: 1px solid #614e55;
+  width: 200px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  padding: 8px 16px;
+`;
+
+const CityName = styled.h2`
+  color: #614e55;
+  font-weight: 800;
 `;
