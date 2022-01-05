@@ -1,7 +1,7 @@
 import Head from "next/head";
 import type { NextPage } from "next";
 import styled, { createGlobalStyle } from "styled-components";
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { type } from "os";
 
 const GlobalStyles = createGlobalStyle`
@@ -17,30 +17,22 @@ body {
         }
 `;
 
+type cityData = {
+  name: string;
+};
 const Home: NextPage = () => {
   const apiKey = "088fa901df58c5e65281cdffd7c8d1a9";
   const toCelsius = "&units=metric";
 
   const [isLoading, setIsLoading] = useState(false);
   const [cityInput, setCityInput] = useState("");
-  const [cityData, setCityData] = useState(undefined);
+  const [cityData, setCityData] = useState<cityData | undefined>(undefined);
 
   // const [latitude, setLatitude] = useState(0);
   // const [longitude, setLongitude] = useState(0);
   // const [url, setUrl] = useState("");
 
-  const API_URL = `api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${apiKey}${toCelsius}`;
-
-  const getCityData = useCallback(() => {
-    setIsLoading(true);
-    fetch(API_URL)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        setCityData(result);
-        setIsLoading(false);
-      });
-  }, [API_URL]);
+  const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${apiKey}${toCelsius}`;
 
   return (
     <Container>
@@ -58,7 +50,20 @@ const Home: NextPage = () => {
           setCityInput(event.target.value);
         }}
       ></Input>
-      <Button id="button" type="button" onClick={getCityData}>
+      <Button
+        id="button"
+        type="button"
+        onClick={() => {
+          setIsLoading(true);
+          fetch(API_URL)
+            .then((response) => response.json())
+            .then((result) => {
+              console.log(result);
+              setCityData(result);
+              setIsLoading(false);
+            });
+        }}
+      >
         Submit
       </Button>
       {isLoading && <p>Loading...</p>}
