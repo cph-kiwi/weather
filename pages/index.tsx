@@ -49,6 +49,7 @@ type cityData = {
   sys: sys;
   timezone: number;
 };
+
 const Home: NextPage = () => {
   const apiKey = "088fa901df58c5e65281cdffd7c8d1a9";
   const toCelsius = "&units=metric";
@@ -78,19 +79,9 @@ const Home: NextPage = () => {
         <title>Weather App</title>
       </Head>
       <Title>Weather</Title>
-      <Input
-        id="city-input"
-        placeholder="City name"
-        type="text"
-        value={cityInput}
-        onChange={(event) => {
-          setCityInput(event.target.value);
-        }}
-      ></Input>
-      <Button
-        id="button"
-        type="button"
-        onClick={() => {
+      <Form
+        onSubmit={(event) => {
+          event.preventDefault();
           setIsLoading(true);
           fetch(API_URL)
             .then((response) => response.json())
@@ -101,8 +92,19 @@ const Home: NextPage = () => {
             });
         }}
       >
-        Submit
-      </Button>
+        <Input
+          id="city-input"
+          placeholder="City name"
+          type="text"
+          value={cityInput}
+          onChange={(event) => {
+            setCityInput(event.target.value);
+          }}
+        ></Input>
+        <Button id="button" type="submit">
+          Submit
+        </Button>
+      </Form>
       {isLoading && <p>Loading...</p>}
       {cityData !== undefined && <CityName>City: {cityData.name}</CityName>}
       {cityData !== undefined && (
@@ -162,6 +164,12 @@ const Title = styled.h1`
   font-weight: 800;
   margin: 100px 0px 0px 0px;
   padding: 0px;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Input = styled.input`
