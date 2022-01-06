@@ -2,7 +2,7 @@ import Head from "next/head";
 import type { NextPage } from "next";
 import styled, { createGlobalStyle } from "styled-components";
 import React, { useState, useEffect } from "react";
-import { type } from "os";
+import { DateTime } from "luxon";
 
 const GlobalStyles = createGlobalStyle`
 html {
@@ -17,8 +17,37 @@ body {
         }
 `;
 
+type clouds = {
+  all: number;
+};
+
+type wind = {
+  speed: number;
+};
+
+type weather = {
+  main: string;
+  description: string;
+  icon: string;
+};
+
+type main = {
+  temp: number;
+};
+
+type sys = {
+  sunrise: number;
+  sunset: number;
+};
+
 type cityData = {
   name: string;
+  main: main;
+  weather: [weather]; // tuple
+  wind: wind;
+  clouds: clouds;
+  sys: sys;
+  timezone: number;
 };
 const Home: NextPage = () => {
   const apiKey = "088fa901df58c5e65281cdffd7c8d1a9";
@@ -33,6 +62,14 @@ const Home: NextPage = () => {
   // const [url, setUrl] = useState("");
 
   const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${apiKey}${toCelsius}`;
+
+  function translateTime(time: number, timezone: number) {
+    const DateObject = new Date(time * 1000);
+    const dt = DateTime.fromJSDate(DateObject, {
+      zone: "utc",
+    }).plus({ second: timezone });
+    return dt;
+  }
 
   return (
     <Container>
@@ -67,9 +104,46 @@ const Home: NextPage = () => {
         Submit
       </Button>
       {isLoading && <p>Loading...</p>}
-      {!isLoading && <p>Type in a city to get the weather.</p>}
-      {cityData === undefined && <CityName>City: ???</CityName>}
       {cityData !== undefined && <CityName>City: {cityData.name}</CityName>}
+      {cityData !== undefined && (
+        <CityDetail>Weather: {cityData.weather[0].main}</CityDetail>
+      )}
+
+      {cityData !== undefined && (
+        <WeatherIcon
+          src={`http://openweathermap.org/img/wn/${cityData.weather[0].icon}@2x.png`}
+        />
+      )}
+
+      {cityData !== undefined && (
+        <CityDetail>Description: {cityData.weather[0].description}</CityDetail>
+      )}
+      {cityData !== undefined && (
+        <CityDetail>
+          Temperature: {Math.round(cityData.main.temp)} celsius
+        </CityDetail>
+      )}
+
+      {cityData !== undefined && (
+        <CityDetail>Wind speed: {cityData.wind.speed} meter/sec</CityDetail>
+      )}
+      {cityData !== undefined && (
+        <CityDetail>Cloudiness: {cityData.clouds.all}%</CityDetail>
+      )}
+      {cityData !== undefined && (
+        <CityDetail>
+          Sunrise: {translateTime(cityData.sys.sunrise, cityData.timezone).hour}
+          :{translateTime(cityData.sys.sunrise, cityData.timezone).minute}:
+          {translateTime(cityData.sys.sunrise, cityData.timezone).second}
+        </CityDetail>
+      )}
+      {cityData !== undefined && (
+        <CityDetail>
+          Sunset: {translateTime(cityData.sys.sunset, cityData.timezone).hour}:
+          {translateTime(cityData.sys.sunset, cityData.timezone).minute}:
+          {translateTime(cityData.sys.sunset, cityData.timezone).second}
+        </CityDetail>
+      )}
     </Container>
   );
 };
@@ -113,4 +187,15 @@ const Button = styled.button`
 const CityName = styled.h2`
   color: #614e55;
   font-weight: 800;
+  margin-top: 0px;
+`;
+
+const CityDetail = styled.h4`
+  color: #614e55;
+  font-weight: 200;
+  margin: 10px 0 10px 0;
+`;
+
+const WeatherIcon = styled.img`
+  // border: 4px solid black;
 `;
