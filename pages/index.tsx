@@ -106,45 +106,34 @@ const Home: NextPage = () => {
         </Button>
       </Form>
       {isLoading && <p>Loading...</p>}
-      {cityData !== undefined && <CityName>City: {cityData.name}</CityName>}
       {cityData !== undefined && (
-        <CityDetail>Weather: {cityData.weather[0].main}</CityDetail>
-      )}
-
-      {cityData !== undefined && (
-        <WeatherIcon
-          src={`http://openweathermap.org/img/wn/${cityData.weather[0].icon}@2x.png`}
-        />
-      )}
-
-      {cityData !== undefined && (
-        <CityDetail>Description: {cityData.weather[0].description}</CityDetail>
-      )}
-      {cityData !== undefined && (
-        <CityDetail>
-          Temperature: {Math.round(cityData.main.temp)} celsius
-        </CityDetail>
-      )}
-
-      {cityData !== undefined && (
-        <CityDetail>Wind speed: {cityData.wind.speed} meter/sec</CityDetail>
-      )}
-      {cityData !== undefined && (
-        <CityDetail>Cloudiness: {cityData.clouds.all}%</CityDetail>
-      )}
-      {cityData !== undefined && (
-        <CityDetail>
-          Sunrise: {translateTime(cityData.sys.sunrise, cityData.timezone).hour}
-          :{translateTime(cityData.sys.sunrise, cityData.timezone).minute}:
-          {translateTime(cityData.sys.sunrise, cityData.timezone).second}
-        </CityDetail>
-      )}
-      {cityData !== undefined && (
-        <CityDetail>
-          Sunset: {translateTime(cityData.sys.sunset, cityData.timezone).hour}:
-          {translateTime(cityData.sys.sunset, cityData.timezone).minute}:
-          {translateTime(cityData.sys.sunset, cityData.timezone).second}
-        </CityDetail>
+        <CityContainer>
+          <CityName>City: {cityData.name}</CityName>
+          <CityDetail>Weather: {cityData.weather[0].main}</CityDetail>
+          <WeatherIcon
+            src={`http://openweathermap.org/img/wn/${cityData.weather[0].icon}@2x.png`}
+          />
+          <CityDetail>
+            Description: {cityData.weather[0].description}
+          </CityDetail>
+          <CityDetail>
+            Temperature: {Math.round(cityData.main.temp)} celsius
+          </CityDetail>
+          <CityDetail>Wind speed: {cityData.wind.speed} meter/sec</CityDetail>
+          <CityDetail>Cloudiness: {cityData.clouds.all}%</CityDetail>
+          <CityDetail>
+            Sunrise:{" "}
+            {translateTime(cityData.sys.sunrise, cityData.timezone).hour}:
+            {translateTime(cityData.sys.sunrise, cityData.timezone).minute}:
+            {translateTime(cityData.sys.sunrise, cityData.timezone).second}
+          </CityDetail>
+          <CityDetail>
+            Sunset: {translateTime(cityData.sys.sunset, cityData.timezone).hour}
+            :{translateTime(cityData.sys.sunset, cityData.timezone).minute}:
+            {translateTime(cityData.sys.sunset, cityData.timezone).second}
+          </CityDetail>
+          <Forecast>Forecast</Forecast>
+        </CityContainer>
       )}
     </Container>
   );
@@ -153,6 +142,12 @@ const Home: NextPage = () => {
 export default Home;
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const CityContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -206,4 +201,9 @@ const CityDetail = styled.h4`
 
 const WeatherIcon = styled.img`
   // border: 4px solid black;
+`;
+
+const Forecast = styled.h2`
+  color: #614e55;
+  font-weight: 800;
 `;
