@@ -89,6 +89,7 @@ const Home: NextPage = () => {
               console.log(result);
               setCityData(result);
               setIsLoading(false);
+              setCityInput("");
             });
         }}
       >
