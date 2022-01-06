@@ -132,7 +132,6 @@ const Home: NextPage = () => {
             :{translateTime(cityData.sys.sunset, cityData.timezone).minute}:
             {translateTime(cityData.sys.sunset, cityData.timezone).second}
           </CityDetail>
-          <Forecast>Forecast</Forecast>
         </CityContainer>
       )}
     </Container>
