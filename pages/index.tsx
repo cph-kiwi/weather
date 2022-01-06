@@ -201,8 +201,3 @@ const CityDetail = styled.h4`
 const WeatherIcon = styled.img`
   // border: 4px solid black;
 `;
-
-const Forecast = styled.h2`
-  color: #614e55;
-  font-weight: 800;
-`;
