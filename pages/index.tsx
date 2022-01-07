@@ -177,10 +177,11 @@ const Home: NextPage = () => {
       {error !== "" && <p>{error}</p>}
       {isLocating && <p>Locating...</p>}
       {location.latitude !== 0 && (
-        <CityDetail>
-          Your location: latitude: {location.latitude}, longitude:{" "}
-          {location.longitude}
-        </CityDetail>
+        <>
+          <CityDetail>Your location...</CityDetail>
+          <CityDetail>latitude: {location.latitude}</CityDetail>
+          <CityDetail>longitude: {location.longitude}</CityDetail>
+        </>
       )}
       {cityData !== undefined && (
         <CityContainer>
