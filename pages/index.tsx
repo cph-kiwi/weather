@@ -56,11 +56,12 @@ const Home: NextPage = () => {
   const toCelsius = "&units=metric";
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
   const [cityInput, setCityInput] = useState("");
   const [cityData, setCityData] = useState<cityData | undefined>(undefined);
+  const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
+  const [error, setError] = useState("");
 
-  // const [latitude, setLatitude] = useState(0);
-  // const [longitude, setLongitude] = useState(0);
   // const [url, setUrl] = useState("");
 
   const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${apiKey}${toCelsius}`;
@@ -72,6 +73,27 @@ const Home: NextPage = () => {
     }).plus({ second: timezone });
     return dt;
   }
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by your browser");
+    } else {
+      setIsLocating(true);
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        () => {
+          setError("Unable to retrieve your location");
+        }
+      );
+      setIsLocating(false);
+    }
+  }, []);
 
   return (
     <Container>
@@ -107,7 +129,16 @@ const Home: NextPage = () => {
           Submit
         </Button>
       </Form>
+
       {isLoading && <p>Loading...</p>}
+      {error !== "" && <p>{error}</p>}
+      {isLocating && <p>Locating...</p>}
+      {location.latitude !== 0 && (
+        <p>Latitude: {Math.round(location.latitude)}</p>
+      )}
+      {location.longitude !== 0 && (
+        <p>Longitude: {Math.round(location.longitude)}</p>
+      )}
       {cityData !== undefined && (
         <CityContainer>
           <CityName>City: {cityData.name}</CityName>
