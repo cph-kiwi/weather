@@ -104,9 +104,18 @@ const Home: NextPage = () => {
           )
             .then((response) => response.json())
             .then((result) => {
-              console.log(result);
+              // console.log("onload current weather", result);
               setCityData(result);
               setIsLoading(false);
+            });
+
+          fetch(
+            `https://api.openweathermap.org/data/2.5/forecast?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}${toCelsius}`
+          )
+            .then((response) => response.json())
+            .then((result) => {
+              // console.log("onload forecast", result);
+              setCityForecast(result);
             });
         },
         () => {
@@ -133,7 +142,7 @@ const Home: NextPage = () => {
           )
             .then((response) => response.json())
             .then((result) => {
-              console.log("current weather", result);
+              // console.log("input current weather", result);
               setCityData(result);
               setIsLoading(false);
               setCityInput("");
@@ -145,7 +154,7 @@ const Home: NextPage = () => {
           )
             .then((response) => response.json())
             .then((result) => {
-              console.log("forecast", result);
+              // console.log("input forecast", result);
               setCityForecast(result);
             });
         }}
