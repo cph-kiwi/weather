@@ -100,7 +100,7 @@ const Home: NextPage = () => {
           setIsLoading(true);
 
           fetch(
-            `http://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}${toCelsius}`
+            `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}${toCelsius}`
           )
             .then((response) => response.json())
             .then((result) => {
@@ -180,7 +180,7 @@ const Home: NextPage = () => {
             {cityData.weather[0].main} {Math.round(cityData.main.temp)}°C
           </CityDetail>
           <WeatherIcon
-            src={`http://openweathermap.org/img/wn/${cityData.weather[0].icon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${cityData.weather[0].icon}@2x.png`}
           />
           <CityDetail>
             Description: {cityData.weather[0].description}
@@ -209,7 +209,7 @@ const Home: NextPage = () => {
             {Math.round(cityForecast.list[8].main.temp)}°C
           </CityDetail>
           <WeatherIcon
-            src={`http://openweathermap.org/img/wn/${cityForecast.list[8].weather[0].icon}@2x.png`}
+            src={`https://openweathermap.org/img/wn/${cityForecast.list[8].weather[0].icon}@2x.png`}
           />
           <CityDetail>
             Description: {cityForecast.list[8].weather[0].description}
