@@ -31,6 +31,13 @@ type weather = {
   icon: string;
 };
 
+type weatherHour = {
+  main: main;
+  weather: [weather]; // tuple
+  wind: wind;
+  clouds: clouds;
+};
+
 type main = {
   humidity: number;
   temp: number;
@@ -51,6 +58,10 @@ type cityData = {
   timezone: number;
 };
 
+type cityForecast = {
+  list: weatherHour[];
+};
+
 const Home: NextPage = () => {
   const apiKey = "088fa901df58c5e65281cdffd7c8d1a9";
   const toCelsius = "&units=metric";
@@ -59,10 +70,11 @@ const Home: NextPage = () => {
   const [isLocating, setIsLocating] = useState(false);
   const [cityInput, setCityInput] = useState("");
   const [cityData, setCityData] = useState<cityData | undefined>(undefined);
+  const [cityForecast, setCityForecast] = useState<cityForecast | undefined>(
+    undefined
+  );
   const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
   const [error, setError] = useState("");
-
-  // const [url, setUrl] = useState("");
 
   function translateTime(time: number, timezone: number) {
     const DateObject = new Date(time * 1000);
@@ -88,7 +100,7 @@ const Home: NextPage = () => {
           setIsLoading(true);
 
           fetch(
-            `http://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=${apiKey}${toCelsius}`
+            `http://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}${toCelsius}`
           )
             .then((response) => response.json())
             .then((result) => {
@@ -103,7 +115,7 @@ const Home: NextPage = () => {
       );
       setIsLocating(false);
     }
-  }, [location]);
+  }, []);
 
   return (
     <Container>
@@ -121,11 +133,20 @@ const Home: NextPage = () => {
           )
             .then((response) => response.json())
             .then((result) => {
-              console.log(result);
+              console.log("current weather", result);
               setCityData(result);
               setIsLoading(false);
               setCityInput("");
               setLocation({ latitude: 0, longitude: 0 });
+            });
+
+          fetch(
+            `https://api.openweathermap.org/data/2.5/forecast?q=${cityInput}&appid=${apiKey}${toCelsius}`
+          )
+            .then((response) => response.json())
+            .then((result) => {
+              console.log("forecast", result);
+              setCityForecast(result);
             });
         }}
       >
@@ -154,16 +175,15 @@ const Home: NextPage = () => {
       )}
       {cityData !== undefined && (
         <CityContainer>
-          <CityName>City: {cityData.name}</CityName>
-          <CityDetail>Weather: {cityData.weather[0].main}</CityDetail>
+          <CityName>{cityData.name}</CityName>
+          <CityDetail>
+            {cityData.weather[0].main} {Math.round(cityData.main.temp)}°C
+          </CityDetail>
           <WeatherIcon
             src={`http://openweathermap.org/img/wn/${cityData.weather[0].icon}@2x.png`}
           />
           <CityDetail>
             Description: {cityData.weather[0].description}
-          </CityDetail>
-          <CityDetail>
-            Temperature: {Math.round(cityData.main.temp)}°C
           </CityDetail>
           <CityDetail>Wind speed: {cityData.wind.speed} meter/sec</CityDetail>
           <CityDetail>Cloudiness: {cityData.clouds.all}%</CityDetail>
@@ -178,6 +198,30 @@ const Home: NextPage = () => {
             Sunset: {translateTime(cityData.sys.sunset, cityData.timezone).hour}
             :{translateTime(cityData.sys.sunset, cityData.timezone).minute}:
             {translateTime(cityData.sys.sunset, cityData.timezone).second}
+          </CityDetail>
+        </CityContainer>
+      )}
+      {cityForecast !== undefined && (
+        <CityContainer>
+          <CityForecast>24 hour Forecast</CityForecast>
+          <CityDetail>
+            {cityForecast.list[8].weather[0].main}{" "}
+            {Math.round(cityForecast.list[8].main.temp)}°C
+          </CityDetail>
+          <WeatherIcon
+            src={`http://openweathermap.org/img/wn/${cityForecast.list[8].weather[0].icon}@2x.png`}
+          />
+          <CityDetail>
+            Description: {cityForecast.list[8].weather[0].description}
+          </CityDetail>
+          <CityDetail>
+            Wind speed: {cityForecast.list[8].wind.speed} meter/sec
+          </CityDetail>
+          <CityDetail>
+            Cloudiness: {cityForecast.list[8].clouds.all}%
+          </CityDetail>
+          <CityDetail>
+            Humidity: {cityForecast.list[8].main.humidity}%
           </CityDetail>
         </CityContainer>
       )}
@@ -236,15 +280,18 @@ const Button = styled.button`
 const CityName = styled.h2`
   color: #614e55;
   font-weight: 800;
-  margin-top: 0px;
+  margin-top: 10px;
+`;
+
+const CityForecast = styled.h2`
+  color: #614e55;
+  font-weight: 800;
 `;
 
 const CityDetail = styled.h4`
   color: #614e55;
   font-weight: 200;
-  margin: 10px 0 10px 0;
+  margin: 10px 0 0px 0;
 `;
 
-const WeatherIcon = styled.img`
-  // border: 4px solid black;
-`;
+const WeatherIcon = styled.img``;
