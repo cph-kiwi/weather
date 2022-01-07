@@ -119,7 +119,7 @@ const Home: NextPage = () => {
             Description: {cityData.weather[0].description}
           </CityDetail>
           <CityDetail>
-            Temperature: {Math.round(cityData.main.temp)} celsius
+            Temperature: {Math.round(cityData.main.temp)}°C
           </CityDetail>
           <CityDetail>Wind speed: {cityData.wind.speed} meter/sec</CityDetail>
           <CityDetail>Cloudiness: {cityData.clouds.all}%</CityDetail>
