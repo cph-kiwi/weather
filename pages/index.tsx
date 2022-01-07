@@ -32,6 +32,7 @@ type weather = {
 };
 
 type main = {
+  humidity: number;
   temp: number;
 };
 
@@ -122,6 +123,7 @@ const Home: NextPage = () => {
           </CityDetail>
           <CityDetail>Wind speed: {cityData.wind.speed} meter/sec</CityDetail>
           <CityDetail>Cloudiness: {cityData.clouds.all}%</CityDetail>
+          <CityDetail>Humidity: {cityData.main.humidity}%</CityDetail>
           <CityDetail>
             Sunrise:{" "}
             {translateTime(cityData.sys.sunrise, cityData.timezone).hour}:
