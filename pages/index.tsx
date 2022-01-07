@@ -64,8 +64,6 @@ const Home: NextPage = () => {
 
   // const [url, setUrl] = useState("");
 
-  const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${apiKey}${toCelsius}`;
-
   function translateTime(time: number, timezone: number) {
     const DateObject = new Date(time * 1000);
     const dt = DateTime.fromJSDate(DateObject, {
@@ -86,6 +84,18 @@ const Home: NextPage = () => {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
           });
+
+          setIsLoading(true);
+
+          fetch(
+            `http://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=${apiKey}${toCelsius}`
+          )
+            .then((response) => response.json())
+            .then((result) => {
+              console.log(result);
+              setCityData(result);
+              setIsLoading(false);
+            });
         },
         () => {
           setError("Unable to retrieve your location");
@@ -93,7 +103,7 @@ const Home: NextPage = () => {
       );
       setIsLocating(false);
     }
-  }, []);
+  }, [location]);
 
   return (
     <Container>
@@ -106,13 +116,16 @@ const Home: NextPage = () => {
         onSubmit={(event) => {
           event.preventDefault();
           setIsLoading(true);
-          fetch(API_URL)
+          fetch(
+            `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${apiKey}${toCelsius}`
+          )
             .then((response) => response.json())
             .then((result) => {
               console.log(result);
               setCityData(result);
               setIsLoading(false);
               setCityInput("");
+              setLocation({ latitude: 0, longitude: 0 });
             });
         }}
       >
@@ -134,10 +147,10 @@ const Home: NextPage = () => {
       {error !== "" && <p>{error}</p>}
       {isLocating && <p>Locating...</p>}
       {location.latitude !== 0 && (
-        <p>Latitude: {Math.round(location.latitude)}</p>
-      )}
-      {location.longitude !== 0 && (
-        <p>Longitude: {Math.round(location.longitude)}</p>
+        <CityDetail>
+          Your location: latitude: {location.latitude}, longitude:{" "}
+          {location.longitude}
+        </CityDetail>
       )}
       {cityData !== undefined && (
         <CityContainer>
