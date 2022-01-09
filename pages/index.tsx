@@ -10,7 +10,7 @@ html {
         }
 body {
           box-sizing: border-box;
-          background: #ffd1dc;
+          background: #ffe6e6;
           font-family: Arial, Helvetica, sans-serif;
           font-size: 20px;
           font-weight: 200;
