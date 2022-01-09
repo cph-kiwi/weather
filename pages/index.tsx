@@ -278,8 +278,8 @@ const Input = styled.input`
 
 const Button = styled.button`
   border-radius: 8px;
-  background: #f7cac9;
-  box-shadow: 8px 8px 8px #cfaaa9, -8px -8px 8px #ffeae9;
+  background: #ffe6e6;
+  box-shadow: 8px 8px 8px #cfaaa9, -8px -8px 8px #ffe6e6;
   border: 1px solid #614e55;
   width: 200px;
   margin-top: 40px;
