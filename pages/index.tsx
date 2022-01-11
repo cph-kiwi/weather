@@ -200,14 +200,17 @@ const Home: NextPage = () => {
           <CityDetail>Humidity: {cityData.main.humidity}%</CityDetail>
           <CityDetail>
             Sunrise:{" "}
-            {translateTime(cityData.sys.sunrise, cityData.timezone).hour}:
-            {translateTime(cityData.sys.sunrise, cityData.timezone).minute}:
-            {translateTime(cityData.sys.sunrise, cityData.timezone).second}
+            {translateTime(
+              cityData.sys.sunrise,
+              cityData.timezone
+            ).toLocaleString(DateTime.TIME_24_SIMPLE)}
           </CityDetail>
           <CityDetail>
-            Sunset: {translateTime(cityData.sys.sunset, cityData.timezone).hour}
-            :{translateTime(cityData.sys.sunset, cityData.timezone).minute}:
-            {translateTime(cityData.sys.sunset, cityData.timezone).second}
+            Sunset:{" "}
+            {translateTime(
+              cityData.sys.sunset,
+              cityData.timezone
+            ).toLocaleString(DateTime.TIME_24_SIMPLE)}
           </CityDetail>
         </CityContainer>
       )}
