@@ -63,9 +63,6 @@ type cityForecast = {
 };
 
 const Home: NextPage = () => {
-  const apiKey = "088fa901df58c5e65281cdffd7c8d1a9";
-  const toCelsius = "&units=metric";
-
   const [isLoading, setIsLoading] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
   const [cityInput, setCityInput] = useState("");
@@ -100,21 +97,19 @@ const Home: NextPage = () => {
           setIsLoading(true);
 
           fetch(
-            `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}${toCelsius}`
+            `/api/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}`
           )
             .then((response) => response.json())
             .then((result) => {
-              // console.log("onload current weather", result);
               setCityData(result);
               setIsLoading(false);
             });
 
           fetch(
-            `https://api.openweathermap.org/data/2.5/forecast?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}${toCelsius}`
+            `/api/forecast?lat=${position.coords.latitude}&lon=${position.coords.longitude}`
           )
             .then((response) => response.json())
             .then((result) => {
-              // console.log("onload forecast", result);
               setCityForecast(result);
             });
         },
@@ -137,24 +132,18 @@ const Home: NextPage = () => {
         onSubmit={(event) => {
           event.preventDefault();
           setIsLoading(true);
-          fetch(
-            `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${apiKey}${toCelsius}`
-          )
+          fetch(`/api/city-weather?cityName=${cityInput}`)
             .then((response) => response.json())
             .then((result) => {
-              // console.log("input current weather", result);
               setCityData(result);
               setIsLoading(false);
               setCityInput("");
               setLocation({ latitude: 0, longitude: 0 });
             });
 
-          fetch(
-            `https://api.openweathermap.org/data/2.5/forecast?q=${cityInput}&appid=${apiKey}${toCelsius}`
-          )
+          fetch(`/api/city-forecast?cityName=${cityInput}`)
             .then((response) => response.json())
             .then((result) => {
-              // console.log("input forecast", result);
               setCityForecast(result);
             });
         }}
